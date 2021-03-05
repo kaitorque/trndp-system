@@ -1,0 +1,250 @@
+{% extends "../layout/base.html" %}
+
+{% block title %}Quantum | Clients{% endblock %}
+
+{% block docpluginstyle %}
+{% endblock %}
+
+{% block docstyle %}
+{% endblock %}
+
+{% block pagetitle %}Client Form{% endblock %}
+
+
+{% block content %}
+<!-- Start Body -->
+<!-- Start::Section -->
+<div class="m-portlet  m-portlet--unair">
+	<div class="m-portlet__body  m-portlet__body--no-padding">
+		<div class="row m-row--no-padding m-row--col-separator-xl">
+			<div class="col-md-12 col-lg-12 col-xl-12">
+              <!--begin::Portlet-->
+    		<div class="m-portlet m-portlet--tab">
+    			<div class="m-portlet__head">
+    				<div class="m-portlet__head-caption">
+    					<div class="m-portlet__head-title">
+    						<span class="m-portlet__head-icon m--hide">
+    							<i class="la la-gear"></i>
+    						</span>
+    						<h3 class="m-portlet__head-text">
+    							Client Details
+    						</h3>
+    					</div>
+    				</div>
+    			</div>
+    			<!--begin::Form-->
+    			<form class="m-form m-form--fit m-form--label-align-right" id="submitForm">
+            <input type="hidden" name="step" value="add">
+            {% csrf_token %}
+    				<div class="m-portlet__body">
+    					<div class="form-group m-form__group">
+    						<label for="fullname">Full Name</label>
+    						<input type="text" class="form-control m-input m-input--square" name="fullname" placeholder="Enter Full Name">
+    					</div>
+    					<div class="form-group m-form__group">
+    						<label for="age">Age</label>
+    						<input type="text" class="form-control m-input m-input--square" name="age" placeholder="Enter Age">
+    					</div>
+    					<div class="form-group m-form__group">
+    						<label for="gender">Gender</label>
+    						<select class="form-control m-input m-input--square" name="gender">
+    							<option>Male</option>
+    							<option>Female</option>
+    						</select>
+    					</div>
+              <div class="form-group m-form__group">
+    						<label for="cognitive">Cognitive [0 - 36] </label>
+    						<input type="text" class="form-control m-input m-input--square" name="cognitive" placeholder="Enter Cognitive">
+    					</div>
+              <div class="form-group m-form__group">
+    						<label for="social">Social [0 - 52] </label>
+    						<input type="text" class="form-control m-input m-input--square" name="social" placeholder="Enter Social">
+    					</div>
+              <div class="form-group m-form__group">
+    						<label for="emotional">Emotional [0 - 64]</label>
+    						<input type="text" class="form-control m-input m-input--square" name="emotional" placeholder="Enter Emotional">
+    					</div>
+              <div class="form-group m-form__group">
+    						<label for="spiritual">Spiritual [0 - 44]</label>
+    						<input type="text" class="form-control m-input m-input--square" name="spiritual" placeholder="Enter Spiritual">
+    					</div>
+              <div class="form-group m-form__group">
+    						<label for="physical">Physical [0 - 44]</label>
+    						<input type="text" class="form-control m-input m-input--square" name="physical" placeholder="Enter Physical">
+    					</div>
+    				</div>
+    				<div class="m-portlet__foot m-portlet__foot--fit">
+    					<div class="m-form__actions">
+    						<button type="submit" class="btn btn-submit btn-success">Submit</button>
+    						<button type="reset" class="btn btn-danger">Cancel</button>
+    					</div>
+    				</div>
+    			</form>
+    			<!--end::Form-->
+    		</div>
+		<!--end::Portlet-->
+			</div>
+		</div>
+	</div>
+</div>
+<!-- End::Section -->
+
+
+<!-- End Body -->
+{% endblock %}
+
+
+{% block docpluginscript %}
+{% endblock %}
+
+{% block docscript %}
+{% endblock %}
+
+{% block docready %}
+<script>
+	$(document).ready(function(){
+		//Set header to csrf token
+    $.ajaxSetup({
+        headers: { "X-CSRFToken": $('input[name="csrfmiddlewaretoken"]').val() }
+    });
+		//Custom Validator
+		jQuery.validator.addMethod("nospace", function(value, element) {
+      return value.indexOf(" ") < 0 && value != "";
+    }, "Space are not allowed.");
+		$.validator.addMethod("notEqualNull", function(value, element) {
+			return this.optional(element) || value != "null";
+		}, "Please select Type.");
+		//Validate form using jquery.validation
+		$("#submitForm").validate({
+				//Normalizer is for trimming whitespace due to required rule no longer ignore whitespace
+				rules: {
+					fullname: {
+							 required: true,
+							 normalizer: function(value) {
+									return $.trim(value);
+									 }
+					},
+					age:	{
+							required: true,
+							normalizer: function(value) {
+								 return $.trim(value);
+									},
+							digits: true,
+              min: 0
+					},
+					gender: {
+						 required: true,
+						 normalizer: function(value) {
+								return $.trim(value);
+						 },
+						 "notEqualNull": true
+					},
+					cognitive: {
+						 required: true,
+						 min: 0,
+						 max: 36,
+						 normalizer: function(value) {
+								return $.trim(value);
+						 }
+					},
+					social: {
+						required: true,
+						min: 0,
+						max: 52,
+						normalizer: function(value) {
+							 return $.trim(value);
+						}
+					},
+					emotional: {
+						required: true,
+						min: 0,
+						max: 64,
+						normalizer: function(value) {
+							 return $.trim(value);
+						}
+					},
+					spiritual: {
+						required: true,
+						min: 0,
+						max: 44,
+						normalizer: function(value) {
+							 return $.trim(value);
+						}
+					},
+					physical: {
+						required: true,
+						min: 0,
+						max: 44,
+						normalizer: function(value) {
+							 return $.trim(value);
+						}
+					}
+				},
+				messages: {},
+				invalidHandler: function(event, validator) {
+					swal({
+						title:"",
+						text:"There are some errors in your form. Please correct them.",
+						type:"error",
+						confirmButtonClass:"btn btn-secondary m-btn m-btn--wide"
+					});
+				 },
+				submitHandler: function(form) {
+					//For spinner animation and disabled button
+					$(form).find(".btn-submit").addClass("m-loader m-loader--success m-loader--right").prop("disabled", true);
+					submitForm(form);
+					//Prevent form submit
+					return false;
+				}
+		});
+
+		function submitForm(form)
+		{
+			$.ajax({
+				type:'Post',
+				url:"{% url "client_form" %}",
+				data: $(form).serialize(),
+				dataType: "json",
+				success: function(data) {
+					if(data.success)
+					{
+						swal({
+							title:"",
+							text:data.response,
+							type:"success",
+							confirmButtonClass:"btn btn-secondary m-btn m-btn--wide"
+						}).then((result) => {
+							//if user click ok, it will redirect the user
+							if (result.value) {
+								window.location.href=("{% url "list_report" %}");
+							}
+						});
+						$(form).find(".btn-submit").removeClass("m-loader m-loader--success m-loader--right").prop("disabled", false);
+					}
+					else
+					{
+						swal({
+							title:"",
+							//Only display first error return by the array
+							text:data.response[0],
+							type:"error",
+							confirmButtonClass:"btn btn-secondary m-btn m-btn--wide"
+						});
+						//Stop spinner and disabled on button
+						$(form).find(".btn-submit").removeClass("m-loader m-loader--success m-loader--right").prop("disabled", false);
+					}
+				},
+				error: function(jqXHR, exception){
+						swal({
+							title:"",
+							text:"Error Code: "+jqXHR.status+"-"+jqXHR.statusText,
+							type:"error",
+							confirmButtonClass:"btn btn-secondary m-btn m-btn--wide"
+						});
+						$(form).find(".btn-submit").removeClass("m-loader m-loader--success m-loader--right").prop("disabled", false);
+					}
+			});
+		}
+	});
+</script>
+{% endblock %}

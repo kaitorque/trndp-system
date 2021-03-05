@@ -1,0 +1,200 @@
+{% extends "../layout/base.html" %}
+{% load static %}
+{% block title %}TRNDP List{% endblock %}
+
+{% block docpluginstyle %}
+<link rel="stylesheet" type="text/css" href="{% static "assets/vendors/custom/datatables/datatables.bundle.css" %}" />
+{% endblock %}
+
+{% block docstyle %}
+{% endblock %}
+
+{% block pagetitle %}List of TRNDP{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+<!-- Start::Section -->
+<div class="m-portlet  m-portlet--unair">
+    <div class="m-portlet__body  m-portlet__body--no-padding">
+        <div class="row m-row--no-padding m-row--col-separator-xl">
+            <div class="col-md-12 col-lg-12 col-xl-12">
+                  <!--begin::Section-->
+                <div class="m-section">
+                    <div class="m-section__content">
+                      <div class="m-portlet m-portlet--mobile">
+                        <div class="m-portlet__body">
+                          <table class="table table-striped table-bordered table-hover table-checkable" id="solutionTable">
+                            <thead>
+                              <tr>
+                                <th>#</th>
+                                <th>Type</th>
+                                <th>Population</th>
+                                <th>Mutation</th>
+                                <th>Elite</th>
+                                <th>Max Node</th>
+                                <th>Route No.</th>
+                                <th>Weight (A,B,C)</th>
+                                <th>Date</th>
+                                <th>Action</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                </div>
+                <!--end::Section-->
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End::Section -->
+{% endblock %}
+
+{% block docpluginscript %}
+<script type="text/javascript" src="{% static "assets/vendors/custom/datatables/datatables.bundle.js" %}"></script>
+{% endblock %}
+
+{% block docscript %}
+{% endblock %}
+
+{% block docready %}
+<script type="text/javascript">
+	$(document).ready(function(){
+		//Set header to csrf token
+    $.ajaxSetup({
+        headers: { "X-CSRFToken": $('input[name="csrfmiddlewaretoken"]').val() }
+    });
+		//Datatable Declaration
+		var tablelist = $("#solutionTable").DataTable({
+			scrollY:"false",
+			scrollX:true,
+			scrollCollapse:true,
+			"columnDefs": [ {
+		        "searchable": false,
+		        "orderable": false,
+		        "targets": 0
+		    } ],
+		  "ordering": false,
+		  "oLanguage": {
+					 "sSearch": "Filter:"
+				 }
+		});
+		//Datatable numbering
+		tablelist.on( 'order.dt search.dt', function () {
+	      tablelist.column(0, {search:'applied', order:'applied'}).nodes().each( function (cell, i) {
+	          cell.innerHTML = i+1;
+	      } );
+	  } ).draw();
+		//Load data to datatables
+		function loaddata()
+		{
+			$.ajax({
+					type:'GET',
+					url:"{% url "list_trndp" %}",
+					data: {step: "solutiontable"},
+					dataType: "json",
+					success:function(data){
+						mApp.unblockPage();
+						tablelist.clear();
+						for(var i=0; i<data.data.length; i++)
+						{
+	              var row = tablelist.row.add(["",
+	                                `${data.data[i].algorithm}, ${data.data[i].type}`,
+									data.data[i].population,
+	                                parseFloat(data.data[i].mutation_rate).toFixed(2),
+									parseFloat(data.data[i].elite_rate).toFixed(2),
+	                                data.data[i].max_node,
+									data.data[i].route_num,
+                                    `${parseFloat(data.data[i].short_tw).toFixed(2)}, ${parseFloat(data.data[i].transfer_w).toFixed(2)}, ${parseFloat(data.data[i].network_w).toFixed(2)}`,
+	                                data.data[i].format_date,
+	                                `<button type="button" class="btn btn-sm btn-danger btn-delete">Delete</button>`]);
+								row.nodes().to$().attr('data-link', data.data[i].link).addClass('list-clickable');
+						}
+	          tablelist.draw();
+					},
+					error: function(jqXHR, exception){
+						swal({
+							title:"",
+							text:"Error Code: "+jqXHR.status+"-"+jqXHR.statusText,
+							type:"error",
+							confirmButtonClass:"btn btn-secondary m-btn m-btn--wide"
+						});
+						mApp.unblockPage();
+					}
+				});
+		}
+		loaddata();
+		//Clickable list
+		$("#solutionTable").on("dblclick", ".list-clickable", function(){
+			var link = $(this).data('link');
+			window.location.href = "{% url "output" %}?q="+link;
+		});
+		//Delete item
+		$("#solutionTable").on("click", ".btn-delete", function(e){
+			e.preventDefault();
+			swal({
+				title:"Are you sure?",
+				text:"You won't be able to revert this!",
+				type:"warning",
+				showCancelButton: true,
+				confirmButtonClass:"btn btn-danger m-btn m-btn--wide"
+			}).then((result) => {
+				if (result.value) {
+					mApp.blockPage({
+							overlayColor: "#000000",
+							type: "loader",
+							state: "success",
+							message: "Please wait..."
+					});
+					var thisbutton = $(this);
+					var delid = $(this).closest("tr").data("link");
+					$.ajax({
+						type:'POST',
+						url:"{% url "list_trndp" %}",
+						data: {delid, step: "delete"},
+						dataType: "json",
+						success:function(data){
+							if(data.success)
+							{
+								swal({
+									title:"",
+									text:data.response,
+									type:"success",
+									confirmButtonClass:"btn btn-secondary m-btn m-btn--wide"
+								}).then((result) => {
+				// 						thisbutton.parent().remove();
+											tablelist.row( thisbutton.closest('tr') ).remove().draw();
+				// 						renumberingList();
+								});
+							}
+							else
+							{
+								swal({
+									title:"",
+									//Only display first error return by the array
+									text:data.response[0],
+									type:"error",
+									confirmButtonClass:"btn btn-secondary m-btn m-btn--wide"
+								});
+							}
+							mApp.unblockPage();
+						},
+						error: function(jqXHR, exception){
+							swal({
+								title:"",
+								text:"Error Code: "+jqXHR.status+"-"+jqXHR.statusText,
+								type:"error",
+								confirmButtonClass:"btn btn-secondary m-btn m-btn--wide"
+							});
+							mApp.unblockPage();
+						}
+					});
+				}
+			});
+		});
+	});
+</script>
+{% endblock %}

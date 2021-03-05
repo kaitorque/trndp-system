@@ -1,0 +1,66 @@
+{% extends "../layout/base.html" %}
+
+{% block title %}TRNDP Output{% endblock %}
+
+{% block docpluginstyle %}
+{% endblock %}
+
+{% block docstyle %}
+<style>
+.network{
+  height: 700px;
+  padding: 0px;
+  position: relative;
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+</style>
+{% endblock %}
+
+{% block pagetitle %}TRNDP Solution{% endblock %}
+
+{% block content %}
+{% load static %}
+<div class="m-portlet  m-portlet--unair" id="social">
+    <div class="m-portlet__body  m-portlet__body--no-padding">
+        <div class="row m-row--no-padding m-row--col-separator-xl">
+            <div class="col-md-12 col-lg-6 col-xl-6">
+                <div class="m-portlet__body">
+                    <div class="network" style="background-image: url('{% static link %}')"></div>
+                </div>
+            </div>
+            <div class="col-md-12 col-lg-6 col-xl-6">
+                <div class="m-portlet__body">
+                    <div class="form-group">
+						<label for="solution">Parameter Setting</label>
+						<textarea class="form-control" readonly rows="11">{{outputtext}}</textarea>
+                    </div>
+                    <div class="form-group">
+						<label for="solution">Solution Evaluation</label>
+						<textarea class="form-control" readonly rows="10">{{outputtext2}}</textarea>
+                    </div>
+                    <div class="form-group">
+						<label for="computational">Computational Evaluation</label>
+						<textarea class="form-control" readonly rows="3">{{outputtext3}}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <a href="{% url 'input' %}" type="button" class="btn btn-success">New Input</a>
+                        <a href="{% url 'list_trndp' %}" type="button" class="btn btn-info">TRNDP List</a>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block docpluginscript %}
+{% endblock %}
+
+{% block docscript %}
+{% endblock %}
+
+{% block docready %}
+{% endblock %}

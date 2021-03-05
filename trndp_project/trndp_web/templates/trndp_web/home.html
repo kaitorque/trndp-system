@@ -1,0 +1,220 @@
+{% extends "../layout/base.html" %}
+
+{% block title %}Quantum | Dashboard{% endblock %}
+
+{% block docpluginstyle %}
+{% endblock %}
+
+{% block docstyle %}
+{% endblock %}
+
+<!-- Page Title -->
+{% block pagetitle %}Dashboard{% endblock %}
+
+<!-- Body Content -->
+{% block content %}
+<!-- Start Body -->
+<div class="m-portlet  m-portlet--unair">
+							<div class="m-portlet__body  m-portlet__body--no-padding">
+								<div class="row m-row--no-padding m-row--col-separator-xl">
+									<div class="col-md-12 col-lg-121 col-xl-12">
+
+										<!--begin::Total Profit-->
+										<div class="m-widget24">
+											<div class="m-widget24__item">
+												<h4 class="m-widget24__title">
+													Total Clients
+												</h4><br>
+												<span class="m-widget24__desc">
+													All Clients
+												</span>
+												<span class="m-widget24__stats m--font-primary">
+													{{data.total}}
+												</span>
+												<div class="m--space-10"></div>
+												<div class="progress m-progress--sm" style="background-color: #9816f4;">
+													<div class="progress-bar m--bg-accent" role="progressbar" style="width: {{data.percentage}}%;" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100"></div>
+												</div>
+												<span class="m-widget24__change">
+													Male/Female
+												</span>
+												<span class="m-widget24__number">
+													{{data.malecnt}}/{{data.femalecnt}}
+												</span>
+											</div>
+										</div>
+
+										<!--end::Total Profit-->
+									</div>
+
+
+								</div>
+							</div>
+						</div>
+
+                        <!--Begin::Section-->
+						<div class="row">
+							<div class="col-xl-12">
+
+								<!--begin:: Widgets/Support Cases-->
+								<div class="m-portlet  m-portlet--full-height  m-portlet--unair">
+									<div class="m-portlet__head">
+										<div class="m-portlet__head-caption">
+											<div class="m-portlet__head-title">
+												<h3 class="m-portlet__head-text">
+													Psychology Approach
+												</h3>
+											</div>
+										</div>
+
+									</div>
+									<div class="m-portlet__body">
+										<div class="m-widget16">
+											<div class="row">
+												<div class="col-md-5">
+													<div class="m-widget16__head">
+														<div class="m-widget16__item">
+															<span class="m-widget16__sceduled">
+																Type
+															</span>
+															<span class="m-widget16__amount m--align-right">
+																Amount
+															</span>
+														</div>
+													</div>
+													<div class="m-widget16__body">
+
+														<!--begin::widget item-->
+														<div class="m-widget16__item">
+															<span class="m-widget16__date">
+																Very High
+															</span>
+															<span class="m-widget16__price m--align-right m--font-brand">
+																{{data.vhcnt}}
+															</span>
+														</div>
+
+														<!--end::widget item-->
+
+														<!--begin::widget item-->
+														<div class="m-widget16__item">
+															<span class="m-widget16__date">
+																High
+															</span>
+															<span class="m-widget16__price m--align-right m--font-accent">
+																{{data.hcnt}}
+															</span>
+														</div>
+
+														<!--end::widget item-->
+
+														<!--begin::widget item-->
+														<div class="m-widget16__item">
+															<span class="m-widget16__date">
+																Medium
+															</span>
+															<span class="m-widget16__price m--align-right m--font-danger">
+																{{data.mcnt}}
+															</span>
+														</div>
+														<!--end::widget item-->
+                                                        <!--begin::widget item-->
+														<div class="m-widget16__item">
+															<span class="m-widget16__date">
+																Low
+															</span>
+															<span class="m-widget16__price m--align-right m--font-info">
+																{{data.lcnt}}
+															</span>
+														</div>
+														<!--end::widget item-->
+                                                        <!--begin::widget item-->
+														<div class="m-widget16__item">
+															<span class="m-widget16__date">
+																Very Low
+															</span>
+															<span class="m-widget16__price m--align-right m--font-success">
+																{{data.vlcnt}}
+															</span>
+														</div>
+														<!--end::widget item-->
+
+													</div>
+												</div>
+												<div class="col-md-7">
+													<div class="m-widget16__stats">
+														<div class="m-widget16__visual">
+															<div id="approach-cnt" style="height: 220px">
+															</div>
+														</div>
+														<div class="m-widget16__legends">
+															<div class="m-widget16__legend">
+																<span class="m-widget16__legend-bullet m--bg-brand"></span>
+																<span class="m-widget16__legend-text">Very High</span>
+															</div>
+															<div class="m-widget16__legend">
+																<span class="m-widget16__legend-bullet m--bg-accent"></span>
+																<span class="m-widget16__legend-text">High</span>
+															</div>
+															<div class="m-widget16__legend">
+																<span class="m-widget16__legend-bullet m--bg-danger"></span>
+																<span class="m-widget16__legend-text">Medium</span>
+															</div>
+                                                            <div class="m-widget16__legend">
+																<span class="m-widget16__legend-bullet m--bg-info"></span>
+																<span class="m-widget16__legend-text">Low</span>
+															</div>
+                                                            <div class="m-widget16__legend">
+																<span class="m-widget16__legend-bullet m--bg-success"></span>
+																<span class="m-widget16__legend-text">Very Low</span>
+															</div>
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<!--end:: Widgets/Support Stats-->
+							</div>
+
+						</div>
+
+						<!--End::Section-->
+<!-- End Body -->
+{% endblock %}
+
+{% block docpluginscript %}
+{% endblock %}
+
+{% block docscript %}
+{% endblock %}
+
+{% block docready %}
+<script>
+$(document).ready(function(){
+	Morris.Donut({
+			element: "approach-cnt",
+			data: [{
+					label: "Very High",
+					value: {{data.vhcnt}}
+			}, {
+					label: "High",
+					value: {{data.hcnt}}
+			}, {
+					label: "Medium",
+					value: {{data.mcnt}}
+			}, {
+					label: "Low",
+					value: {{data.lcnt}}
+			}, {
+					label: "Very Low",
+					value: {{data.vlcnt}}
+			}],
+			labelColor: "#a7a7c2",
+			colors: [mApp.getColor("brand"), mApp.getColor("accent"), mApp.getColor("danger"), mApp.getColor("info"), mApp.getColor("success")]
+	})
+});
+</script>
+{% endblock %}
