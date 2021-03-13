@@ -1,5 +1,5 @@
 # trndp-system
-TRNDP System for FYP
+TRNDP System for FYP update
 
 
 ## Table of contents
